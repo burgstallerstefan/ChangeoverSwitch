@@ -128,11 +128,14 @@ function main(){
 
 /*##################  SET OUTPUTS  #########################*/
 function setOutputs(){
-  if(outputRPC.done[0] && outputRPC.done[1]){
+  if(outputRPC.done[0]){
     //print("Both Output-RPC-Call done.");
     outputRPC.call[0] = true;
-    outputRPC.call[1] = true;
     outputRPC.done[0] = false;
+  }
+    if(outputRPC.done[1]){
+    //print("Both Output-RPC-Call done.");
+    outputRPC.call[1] = true;
     outputRPC.done[1] = false;
   }
 
