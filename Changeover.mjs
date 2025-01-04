@@ -59,7 +59,7 @@ Shelly.addEventHandler(function(event, user_data) { // synchronize model
 function setConsumption(){
  
  if(consumptionRPC.done[0] && consumptionRPC.done[1]){
-    print("Both Consumption-RPC-Call done.");
+    //print("Both Consumption-RPC-Call done.");
     consumptionRPC.call[0] = true;
     consumptionRPC.call[1] = true;
     consumptionRPC.done[0] = false;
@@ -72,7 +72,7 @@ function setConsumption(){
           if (result) {
               shelly.output["0"].apower = result.apower;
               consumptionRPC.done[0] = true;
-              print("Consumption-RPC-Call [0] done.");
+              //print("Consumption-RPC-Call [0] done.");
           }
     });
    }
@@ -83,7 +83,7 @@ function setConsumption(){
         if (result) {
             shelly.output["1"].apower = result.apower;
             consumptionRPC.done[1] = true;
-            print("Consumption-RPC-Call [1] done.");
+            //print("Consumption-RPC-Call [1] done.");
         }
     });
    }
@@ -129,7 +129,7 @@ function main(){
 /*##################  SET OUTPUTS  #########################*/
 function setOutputs(){
   if(outputRPC.done[0] && outputRPC.done[1]){
-    print("Both Output-RPC-Call done.");
+    //print("Both Output-RPC-Call done.");
     outputRPC.call[0] = true;
     outputRPC.call[1] = true;
     outputRPC.done[0] = false;
@@ -141,7 +141,7 @@ function setOutputs(){
     Shelly.call("Switch.Set", {id: 0, on: shelly.output["0"].state}, function(result) {
         if(result){
           outputRPC.done[0] = true;
-          print("Output-RPC-Call [1] done.");
+          //print("Output-RPC-Call [1] done.");
         }
     });
   }
@@ -151,7 +151,7 @@ function setOutputs(){
     Shelly.call("Switch.Set", {id: 1, on: shelly.output["1"].state}, function(result) {
         if(result){
           outputRPC.done[1] = true;
-          print("Output-RPC-Call [1] done.");
+          //print("Output-RPC-Call [1] done.");
         }
     });
   }
@@ -163,4 +163,4 @@ function cyclic(){
     setOutputs();
 }
 
-Timer.set(100, true, cyclic);
+Timer.set(1000, true, cyclic);
