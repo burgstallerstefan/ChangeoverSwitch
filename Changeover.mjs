@@ -53,12 +53,18 @@ Shelly.addEventHandler(function(event, user_data) { // synchronize model
 
     if(_isInput){
         shelly.input[_id].state = _state;
+        setOutputs();
     }else{
         shelly.output[_id].state = _state;
     }
     
     alexaOn = shelly.output["0"].state && shelly.output["1"].state;
     alexaOff = (!shelly.output["0"].state) && (!shelly.output["1"].state);
+    
+    if(alexaOn || alexaOff) {
+      alexa();
+      setOutputs();
+    }
     
 }, null);
 
@@ -97,7 +103,7 @@ function setConsumption(){
 }
 
 /*##################  ALEXA LOGIC  #########################*/
-function main(){
+function alexa(){
 
     // Alexa switched both off
     if(alexaOff){
@@ -125,19 +131,18 @@ function main(){
         print("Was on.")
       }
     }
-    
-    if(! shelly.crossed){
-      shelly.output["0"].state = shelly.input["0"].state;
-      shelly.output["1"].state = shelly.input["1"].state;
-    }else{
-      shelly.output["0"].state = shelly.input["1"].state;
-      shelly.output["1"].state = shelly.input["0"].state;
-    }
 }
 
 /*##################  SET OUTPUTS  #########################*/
 function setOutputs(){
-  if(alexaOn || alexaOff ){return;} // alexa command was not handled yet
+  
+  if(! shelly.crossed){
+    shelly.output["0"].state = shelly.input["0"].state;
+    shelly.output["1"].state = shelly.input["1"].state;
+  }else{
+    shelly.output["0"].state = shelly.input["1"].state;
+    shelly.output["1"].state = shelly.input["0"].state;
+  }
   
   if(outputRPC.done[0]){
     //print("Both Output-RPC-Call done.");
@@ -161,6 +166,7 @@ function setOutputs(){
     });
   }
   
+  if(alexaOn || alexaOff ){return;} // alexa command was not handled yet
   if(outputRPC.call[1]){
     outputRPC.call[1] = false;
     Shelly.call("Switch.Set", {id: 1, on: shelly.output["1"].state}, function(result) {
@@ -172,10 +178,4 @@ function setOutputs(){
   }
 }
 
-function cyclic(){
-    setConsumption();
-    main();
-    setOutputs();
-}
-
-Timer.set(1000, true, cyclic);
+Timer.set(100, true, setConsumption);
