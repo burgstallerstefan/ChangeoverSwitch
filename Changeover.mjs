@@ -31,6 +31,9 @@ let outputRPC = {
   done:[true, true]
 };
 
+let alexaOn = false;
+let alexaOff = false;
+
 print("Hello World");
 
 /*##################  EVENT  #########################*/
@@ -53,6 +56,10 @@ Shelly.addEventHandler(function(event, user_data) { // synchronize model
     }else{
         shelly.output[_id].state = _state;
     }
+    
+    alexaOn = shelly.output["0"].state && shelly.output["1"].state;
+    alexaOff = (!shelly.output["0"].state) && (!shelly.output["1"].state);
+    
 }, null);
 
 /*##################  READ CONSUMPTION  #########################*/
@@ -93,7 +100,8 @@ function setConsumption(){
 function main(){
 
     // Alexa switched both off
-    if((!shelly.output["0"].state) && (!shelly.output["1"].state)){
+    if(alexaOff){
+      alexaOff = false;
       print("")
       print("Alexa switched both off");
       // and was on
@@ -105,7 +113,8 @@ function main(){
       }
     }
     
-    if(shelly.output["0"].state && shelly.output["1"].state){
+    if(alexaOn){
+      alexaOn = false;
       print("")
       print("Alexa switched both on");
       // and was off
@@ -128,6 +137,8 @@ function main(){
 
 /*##################  SET OUTPUTS  #########################*/
 function setOutputs(){
+  if(alexaOn || alexaOff ){return;} // alexa command was not handled yet
+  
   if(outputRPC.done[0]){
     //print("Both Output-RPC-Call done.");
     outputRPC.call[0] = true;
