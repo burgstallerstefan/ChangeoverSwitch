@@ -149,7 +149,8 @@ function setOutputs(){
     outputRPC.call[1] = true;
     outputRPC.done[1] = false;
   }
-
+  
+  if(alexaOn || alexaOff ){return;} // alexa command was not handled yet
   if(outputRPC.call[0]){
     outputRPC.call[0] = false;
     Shelly.call("Switch.Set", {id: 0, on: shelly.output["0"].state}, function(result) {
