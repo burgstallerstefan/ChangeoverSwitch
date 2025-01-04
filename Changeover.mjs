@@ -38,7 +38,6 @@ let inputRPC = {
 
 let inputCnt = 0;
 let switchOut = false;
-
 let initialized = false;
 
 print("Hello World");
@@ -84,13 +83,13 @@ Shelly.addEventHandler(function(event, user_data) { // synchronize model
 
 /*##################  READ CONSUMPTION  #########################*/
 function setConsumption(){
- 
  if(consumptionRPC.done[0] && consumptionRPC.done[1]){
     //print("Both Consumption-RPC-Call done.");
     consumptionRPC.call[0] = true;
     consumptionRPC.call[1] = true;
     consumptionRPC.done[0] = false;
     consumptionRPC.done[1] = false;
+    return true;
   }
   
   if(consumptionRPC.call[0]){
@@ -114,6 +113,7 @@ function setConsumption(){
         }
     });
    }
+   return false;
 }
 
 /*##################  ALEXA LOGIC  #########################*/
@@ -160,11 +160,11 @@ function switchOutputs(){
 
   if(outputRPC.done[0] && outputRPC.done[1]){
     //print("Both Output-RPC-Call done.");
-    switchOut = false;
     outputRPC.call[0] = true;
     outputRPC.done[0] = false;
     outputRPC.call[1] = true;
     outputRPC.done[1] = false;
+    return true;
   }
   
   if(outputRPC.call[0]){
@@ -186,6 +186,7 @@ function switchOutputs(){
         }
     });
   }
+  return false;
 }
 
 function readInputs(){
@@ -223,31 +224,56 @@ function readInputs(){
   return false;
 }
 
+/*##################  INITIALIZATION  #########################*/
 let doneIn = false;
+let doneOut = false;
+let waitCnt = 0;
+let doneCons = false;
 function init(){
   if(!doneIn){
     doneIn = readInputs();
-  }else{
     setOutputs();
-    switchOut = true;
-    return true;
+  }else{
+    if(!doneOut){
+      doneOut = switchOutputs();
+    }else{
+      if(waitCnt < 10){
+        waitCnt ++;
+      }else{
+        if(!doneCons){
+          doneCons = setConsumption();
+        }else{
+          if(shelly.output["0"].apower || shelly.output["1"].apower){
+            print("Init light was on.");
+            shelly.crossed = !shelly.crossed;
+            setOutputs();
+            switchOut = true;
+          }else{
+            print("Init light was off.");
+          }
+          return true;
+        }
+      }
+    }
   }
   return false;
 }
 
+/*##################  CYCLIC  #########################*/
 function cyclic(){
 
   if(!initialized){
-    initialized = init();
+    initialized = init();    
     if(initialized){
       print("Initialization successful.");
     }
   }else{
     setConsumption();
     if(switchOut){
-      switchOutputs();
+      switchOut = !switchOutputs();
     }
   }
 }
 
 Timer.set(10, true, cyclic);
+
