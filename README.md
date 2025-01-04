@@ -1,72 +1,54 @@
-# Shelly Changeover switch
+# Shelly 2PM Two-Way Switching Script
 
-This repository contains a script designed to manage and control a Shelly device. The script synchronizes input and output states, tracks energy consumption, and integrates basic logic for toggling states via Alexa. It is implemented using Shelly's API and event handlers.
+This script enables two-way switching functionality for the **Shelly 2PM**, providing seamless integration between physical inputs and smart home systems like Alexa.
+
+---
 
 ## Features
 
-- **Input/Output Synchronization**: Updates device output states based on input changes and vice versa.
-- **Energy Monitoring**: Tracks active power consumption on connected outputs.
-- **Alexa Integration**: Adds support for controlling the device using Alexa with logical state handling.
-- **Cross-Output Logic**: Includes functionality for switching states between two outputs.
-- **Initialization and Cyclic Updates**: Ensures the system is initialized and periodically updated.
+- **Two-Way Switching Logic**:  
+  - Default mapping: `input[0] -> output[0]` and `input[1] -> output[1]`.  
+  - Automatically switches to a crossed state (`input[0] -> output[1]` and `input[1] -> output[0]`) after external toggling via Alexa or other systems.
 
-## File Structure
+- **Alexa Integration**:  
+  - Handles simultaneous toggling of both outputs by grouping them in Alexa or another smart home system.
+  - Ensures the next manual switch operation works correctly with updated mapping.
 
-- `model`: Represents the internal state of the Shelly device inputs and outputs.
-- `event handlers`: Synchronize the device state with real-time events.
-- `functions`: Handle input/output toggling, state updates, and power consumption readings.
-- `cyclic`: A periodic timer-based function to manage system updates and ensure consistency.
+- **Automatic State Detection**:  
+  - Reads initial input/output states and power consumption on startup.
+  - Adjusts the switching logic based on whether the lights were already on or off.
 
-## Requirements
+- **Failsafe Operation**:  
+  - Maintains correct switching behavior even after external interference or manual toggling of outputs.
 
-- **Shelly Device**: Compatible with devices supporting Shelly scripts.
-- **Shelly Cloud API**: The script relies on Shelly's API for status updates and toggling states.
-- **Timer**: Uses a periodic timer for cyclic updates.
+---
 
-## Installation
+## Prerequisites
 
-1. Open the Shelly script editor for your device.
-2. Copy and paste the provided script into the editor.
-3. Save and enable the script.
+1. **Shelly 2PM Configuration**:  
+   - Ensure the Shelly 2PM is set up and accessible via the Shelly app or Web UI.
+
+2. **Alexa/Smart Home Grouping**:  
+   - Create a group containing both outputs (`output[0]` and `output[1]`) to allow simultaneous toggling.
+
+3. **Script Installation**:  
+   - Open the **Scripts** section in the Shelly Web UI.  
+   - Copy and paste the script into a new script file.  
+   - Save and enable the script.
+
+---
 
 ## Usage
 
-1. **Initialization**: The script automatically initializes on start-up. It reads input/output states, checks power consumption, and sets the initial state.
-2. **Real-Time Events**: Updates are handled through Shelly event handlers to keep the device state synchronized.
-3. **Alexa Commands**: Alexa can switch outputs on or off. The script manages additional logic to handle cross-state toggling.
+1. **Physical Inputs**:  
+   - Use `input[0]` or `input[1]` to toggle the corresponding outputs.
 
-## Functions Overview
+2. **Alexa/Smart Home**:  
+   - Control both outputs simultaneously through Alexa or another grouped smart home system.
 
-### `setConsumption`
+3. **Startup Behavior**:  
+   - The script initializes by detecting input/output states and power consumption, ensuring reliable operation from the start.
 
-Diese Funktion liest den aktuellen Energieverbrauch (Active Power) der Ausgänge und aktualisiert das interne Modell. Sie wird verwendet, um zu prüfen, ob eine Last eingeschaltet ist (d.h. ob der Verbrauch > 0 ist). 
+---
 
-Die Informationen über die Leistungsaufnahme sind wichtig, um den Zustand der angeschlossenen Geräte zu überwachen und sicherzustellen, dass die Steuerungslogik (z. B. für Alexa-Befehle) korrekt funktioniert.
-
-### `alexaOn` & `alexaOff`
-Handle Alexa commands to toggle both outputs.
-
-### `setOutputs`
-Synchronizes output states based on input and cross-state logic.
-
-### `switchOutputs`
-Executes the RPC calls to set the physical device output states.
-
-### `readInputs`
-Reads the current input states from the device and updates the internal model.
-
-### `init`
-Initialization logic to ensure the device starts in a consistent state.
-
-### `cyclic`
-A periodic function that updates energy consumption and synchronizes outputs.
-
-## Development Notes
-
-- The script uses a `Timer.set` with a 10ms interval for cyclic updates.
-- Output state toggling includes logic to avoid unnecessary state changes.
-- Ensure your Shelly device firmware supports the scripting functionality.
-
-## License
-
-This project is licensed under the MIT License. See the `LICENSE` file for details.
+This script enhances the functionality of the Shelly 2PM, ensuring smooth and reliable two-way switching in both manual and smart home setups.
