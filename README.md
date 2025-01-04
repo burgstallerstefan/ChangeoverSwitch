@@ -18,9 +18,6 @@ This script enables **changeover switch** functionality for the **Shelly 2PM**, 
   - Reads initial input/output states and power consumption on startup.  
   - Adjusts the switching logic based on whether the lights were already on or off.
 
-- **Failsafe Operation**:  
-  - Maintains correct switching behavior even after external interference or manual toggling of outputs.
-
 ---
 
 ## Prerequisites
