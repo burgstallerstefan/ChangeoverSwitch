@@ -31,9 +31,9 @@ let outputRPC = {
   done:[true, true]
 };
 
-let alexaOn = false;
-let alexaOff = false;
 let inputCnt = 0;
+
+let switchOut = false;
 
 print("Hello World");
 
@@ -59,15 +59,17 @@ Shelly.addEventHandler(function(event, user_data) { // synchronize model
         shelly.output[_id].state = _state;
     }
     
-    alexaOn = shelly.output["0"].state && shelly.output["1"].state;
-    alexaOff = (!shelly.output["0"].state) && (!shelly.output["1"].state);
-    
-    if(alexaOn || alexaOff) {
-      alexa();
+    if(shelly.output["0"].state && shelly.output["1"].state) { // alexa on
+      alexaOn();
       setOutputs();
     }
     
-    if(inputCnt>1){
+    if((!shelly.output["0"].state) && (!shelly.output["1"].state)) { // alexa off
+      alexaOff();
+      setOutputs();
+    }
+    
+    if(inputCnt>1){ // both input states received
       inputCnt = 0;
       setOutputs();
     }
@@ -109,33 +111,27 @@ function setConsumption(){
 }
 
 /*##################  ALEXA LOGIC  #########################*/
-function alexa(){
-
-    // Alexa switched both off
-    if(alexaOff){
-      alexaOff = false;
-      print("")
-      print("Alexa switched both off");
-      // and was on
-      if(shelly.output["0"].apower || shelly.output["1"].apower){
-        print("Was on.");
-        shelly.crossed = !shelly.crossed;
-      }else{
-        print("Was off.")
-      }
+function alexaOn(){
+    print("")
+    print("Alexa switched both on");
+    // and was off
+    if((!shelly.output["0"].apower) && (!shelly.output["1"].apower)){
+      print("Was off.")
+      shelly.crossed = !shelly.crossed;
+    }else{
+      print("Was on.")
     }
-    
-    if(alexaOn){
-      alexaOn = false;
-      print("")
-      print("Alexa switched both on");
-      // and was off
-      if((!shelly.output["0"].apower) && (!shelly.output["1"].apower)){
-        print("Was off.")
-        shelly.crossed = !shelly.crossed;
-      }else{
-        print("Was on.")
-      }
+}
+
+function alexaOff(){
+    print("")
+    print("Alexa switched both off");
+    // and was on
+    if(shelly.output["0"].apower || shelly.output["1"].apower){
+      print("Was on.");
+      shelly.crossed = !shelly.crossed;
+    }else{
+      print("Was off.")
     }
 }
 
@@ -149,18 +145,18 @@ function setOutputs(){
     shelly.output["0"].state = shelly.input["1"].state;
     shelly.output["1"].state = shelly.input["0"].state;
   }
+  
+  switchOut = true;
 }
 
 /*##################  Switch OUTPUTS  #########################*/
 function switchOutputs(){
-  
-  if(outputRPC.done[0]){
+
+  if(outputRPC.done[0] && outputRPC.done[1]){
     //print("Both Output-RPC-Call done.");
+    switchOut = false;
     outputRPC.call[0] = true;
     outputRPC.done[0] = false;
-  }
-    if(outputRPC.done[1]){
-    //print("Both Output-RPC-Call done.");
     outputRPC.call[1] = true;
     outputRPC.done[1] = false;
   }
@@ -188,7 +184,9 @@ function switchOutputs(){
 
 function cyclic(){
   setConsumption();
-  switchOutputs();
+  if(switchOut){
+    switchOutputs();
+  }
 }
 Timer.set(10, true, cyclic);
 
