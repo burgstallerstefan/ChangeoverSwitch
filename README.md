@@ -11,7 +11,7 @@ This script enables **changeover switch** functionality for the **Shelly 2PM**, 
   - Automatically switches to a crossed state (`input[0] -> output[1]` and `input[1] -> output[0]`) after external toggling via Alexa or other systems.
 
 - **Alexa Integration**:  
-  - Handles simultaneous toggling of both outputs by grouping them in Alexa or another smart home system.  
+  - Handles simultaneous toggling of both outputs by Alexa.  
   - Ensures the next manual switch operation works correctly with updated mapping.
 
 - **Automatic State Detection**:  
