@@ -3,7 +3,7 @@ let shelly = {
     crossed: false,
     input: {
         "0": {
-          state:   true
+          state:   false
         },
         "1": {
           state: false
@@ -22,18 +22,24 @@ let shelly = {
 };
 
 let consumptionRPC = {
-  call:[false, false],
-  done:[true, true]
+  call:[true, true],
+  done:[false, false]
 };
 
 let outputRPC = {
-  call:[false, false],
-  done:[true, true]
+  call:[true, true],
+  done:[false, false]
+};
+
+let inputRPC = {
+  call:[true, true],
+  done:[false, false]
 };
 
 let inputCnt = 0;
-
 let switchOut = false;
+
+let initialized = false;
 
 print("Hello World");
 
@@ -166,7 +172,7 @@ function switchOutputs(){
     Shelly.call("Switch.Set", {id: 0, on: shelly.output["0"].state}, function(result) {
         if(result){
           outputRPC.done[0] = true;
-          //print("Output-RPC-Call [1] done.");
+          print("Output-RPC-Call [0] done.");
         }
     });
   }
@@ -176,18 +182,72 @@ function switchOutputs(){
     Shelly.call("Switch.Set", {id: 1, on: shelly.output["1"].state}, function(result) {
         if(result){
           outputRPC.done[1] = true;
-          //print("Output-RPC-Call [1] done.");
+          print("Output-RPC-Call [1] done.");
         }
     });
   }
 }
 
+function readInputs(){
+  if(inputRPC.done[0] && inputRPC.done[1]){
+    //print("Both Input-RPC-Call done.");
+    inputRPC.call[0] = true;
+    inputRPC.done[0] = false;
+    inputRPC.call[1] = true;
+    inputRPC.done[1] = false;
+    return true;
+  }
+  
+  if(inputRPC.call[0]){
+    inputRPC.call[0] = false;
+    Shelly.call("Input.GetStatus", {id: 0}, function(result) {
+        if(result){
+          inputRPC.done[0] = true;
+          shelly.input["0"].state = result.state;
+          print("Input-RPC-Call [0] done.");
+        }
+    });
+  }
+  
+  if(inputRPC.call[1]){
+    inputRPC.call[1] = false;
+    Shelly.call("Input.GetStatus", {id: 1}, function(result) {
+        if(result){
+          inputRPC.done[1] = true;
+          shelly.input["1"].state = result.state;
+          print("Input-RPC-Call [1] done.");
+        }
+     });
+  }
+  
+  return false;
+}
+
+let doneIn = false;
+function init(){
+  if(!doneIn){
+    doneIn = readInputs();
+  }else{
+    setOutputs();
+    switchOut = true;
+    return true;
+  }
+  return false;
+}
+
 function cyclic(){
-  setConsumption();
-  if(switchOut){
-    switchOutputs();
+
+  if(!initialized){
+    initialized = init();
+    if(initialized){
+      print("Initialization successful.");
+    }
+  }else{
+    setConsumption();
+    if(switchOut){
+      switchOutputs();
+    }
   }
 }
-Timer.set(10, true, cyclic);
 
-switchOutputs();
+Timer.set(10, true, cyclic);
