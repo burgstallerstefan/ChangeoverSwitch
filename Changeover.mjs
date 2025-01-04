@@ -33,6 +33,7 @@ let outputRPC = {
 
 let alexaOn = false;
 let alexaOff = false;
+let inputCnt = 0;
 
 print("Hello World");
 
@@ -53,7 +54,7 @@ Shelly.addEventHandler(function(event, user_data) { // synchronize model
 
     if(_isInput){
         shelly.input[_id].state = _state;
-        setOutputs();
+        inputCnt ++;
     }else{
         shelly.output[_id].state = _state;
     }
@@ -63,6 +64,11 @@ Shelly.addEventHandler(function(event, user_data) { // synchronize model
     
     if(alexaOn || alexaOff) {
       alexa();
+      setOutputs();
+    }
+    
+    if(inputCnt>1){
+      inputCnt = 0;
       setOutputs();
     }
     
@@ -143,6 +149,10 @@ function setOutputs(){
     shelly.output["0"].state = shelly.input["1"].state;
     shelly.output["1"].state = shelly.input["0"].state;
   }
+}
+
+/*##################  Switch OUTPUTS  #########################*/
+function switchOutputs(){
   
   if(outputRPC.done[0]){
     //print("Both Output-RPC-Call done.");
@@ -155,7 +165,6 @@ function setOutputs(){
     outputRPC.done[1] = false;
   }
   
-  if(alexaOn || alexaOff ){return;} // alexa command was not handled yet
   if(outputRPC.call[0]){
     outputRPC.call[0] = false;
     Shelly.call("Switch.Set", {id: 0, on: shelly.output["0"].state}, function(result) {
@@ -166,7 +175,6 @@ function setOutputs(){
     });
   }
   
-  if(alexaOn || alexaOff ){return;} // alexa command was not handled yet
   if(outputRPC.call[1]){
     outputRPC.call[1] = false;
     Shelly.call("Switch.Set", {id: 1, on: shelly.output["1"].state}, function(result) {
@@ -178,4 +186,10 @@ function setOutputs(){
   }
 }
 
-Timer.set(100, true, setConsumption);
+function cyclic(){
+  setConsumption();
+  switchOutputs();
+}
+Timer.set(10, true, cyclic);
+
+switchOutputs();
