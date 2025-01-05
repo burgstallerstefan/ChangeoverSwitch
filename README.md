@@ -1,6 +1,6 @@
 # Shelly 2PM Changeover Switch Script
 
-This script enables **changeover switch** functionality for the **Shelly 2PM**, providing seamless integration between physical inputs and smart home systems like Alexa.
+This script enables **changeover switch** functionality for the **Shelly 2PM**, providing seamless integration between switches and smart home systems like Alexa.
 
 ---
 
