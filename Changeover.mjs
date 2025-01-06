@@ -277,3 +277,17 @@ function cyclic(){
 
 Timer.set(10, true, cyclic);
 
+Shelly.call("Switch.SetConfig", {
+  id: 0,
+  config: {
+    in_mode: "detached",
+  },
+});
+
+Shelly.call("Switch.SetConfig", {
+  id: 1,
+  config: {
+    in_mode: "detached",
+  },
+});
+
