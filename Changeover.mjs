@@ -43,12 +43,16 @@ let initialized = false;
 print("Hello World");
 
 /*##################  EVENT  #########################*/
+let _id = "";
+let _input = "";
+let _isInput = false;
+let _state = false;
 Shelly.addEventHandler(function(event, user_data) { // synchronize model
-    let _id = event.component;
-    let _input = _id.slice(0, _id.indexOf(':'));
-    let _isInput = _input === "input";
+    _id = event.component;
+    _input = _id.slice(0, _id.indexOf(':'));
+    _isInput = _input === "input";
     _id = _id.slice(_id.indexOf(':')+1);
-    let _state = event.info.state;
+    _state = event.info.state;
     
     if(_state === undefined) return;
     
@@ -261,7 +265,6 @@ function init(){
 
 /*##################  CYCLIC  #########################*/
 function cyclic(){
-
   if(!initialized){
     initialized = init();    
     if(initialized){
@@ -275,7 +278,7 @@ function cyclic(){
   }
 }
 
-Timer.set(10, true, cyclic);
+Timer.set(10, true, reset);
 
 Shelly.call("Switch.SetConfig", {
   id: 0,
