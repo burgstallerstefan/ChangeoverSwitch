@@ -278,7 +278,7 @@ function cyclic(){
   }
 }
 
-Timer.set(10, true, cyclic());
+Timer.set(10, true, cyclic);
 
 Shelly.call("Switch.SetConfig", {
   id: 0,
