@@ -2,6 +2,10 @@
 
 This script enables **changeover switch** functionality for the **Shelly 2PM**, providing seamless integration between switches and smart home systems like Alexa.
 
+This script only makes sense if the wiring looks like this:
+
+![ShellDiag](https://github.com/user-attachments/assets/022be4b8-6bc7-42d0-b6e4-e25588aec309)
+
 ---
 
 ## Features
