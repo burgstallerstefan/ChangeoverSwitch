@@ -208,6 +208,9 @@ function readInputs(){
     Shelly.call("Input.GetStatus", {id: 0}, function(result) {
         if(result){
           inputRPC.done[0] = true;
+          if(result.state === null){
+            result.state = false;
+          }
           shelly.input["0"].state = result.state;
           print("Input-RPC-Call [0] done.");
         }
@@ -219,6 +222,9 @@ function readInputs(){
     Shelly.call("Input.GetStatus", {id: 1}, function(result) {
         if(result){
           inputRPC.done[1] = true;
+          if(result.state === null){
+            result.state = false;
+          }
           shelly.input["1"].state = result.state;
           print("Input-RPC-Call [1] done.");
         }
@@ -236,7 +242,9 @@ let doneCons = false;
 function init(){
   if(!doneIn){
     doneIn = readInputs();
-    setOutputs();
+    if(doneIn){
+        setOutputs();
+    }
   }else{
     if(!doneOut){
       doneOut = switchOutputs();
