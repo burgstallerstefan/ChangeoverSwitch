@@ -7,7 +7,8 @@ This script only makes sense if the wiring looks like this:
 ![ShellDiag](https://github.com/user-attachments/assets/022be4b8-6bc7-42d0-b6e4-e25588aec309)
 
 If the wiring is still freely selectable, you can wire the Shelly as follows and configure the switch as an Edge, so the script is not necessary:
-![b380719e-f82d-4b11-8738-e99ee262c120](https://github.com/user-attachments/assets/c20e5f03-6d9e-4832-a066-6258a5f0d8fd)
+![image](https://github.com/user-attachments/assets/ee62b021-558e-4b24-b471-e86e203979f4)
+
 
 ---
 
