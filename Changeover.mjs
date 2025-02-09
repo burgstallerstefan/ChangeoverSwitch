@@ -243,7 +243,9 @@ function init(){
   if(!doneIn){
     doneIn = readInputs();
     if(doneIn){
+        print("Read Inputs successful.")
         setOutputs();
+        print("Set Outputs successful.")
     }
   }else{
     if(!doneOut){
@@ -256,12 +258,12 @@ function init(){
           doneCons = setConsumption();
         }else{
           if(shelly.output["0"].apower || shelly.output["1"].apower){
-            print("Init light was on.");
+            print("  Init light was on.");
             shelly.crossed = !shelly.crossed;
             setOutputs();
             switchOut = true;
           }else{
-            print("Init light was off.");
+            print("  Init light was off.");
           }
           return true;
         }
@@ -301,4 +303,3 @@ Shelly.call("Switch.SetConfig", {
     in_mode: "detached",
   },
 });
-
