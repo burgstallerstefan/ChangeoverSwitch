@@ -131,7 +131,6 @@ function eventHandler(event){
       shelly.input[_id].state = _state;
       inputCnt ++;
   }else{
-      console(ERROR, "That is a little bit unexpected.");
       shelly.output[_id].state = _state;
   }
   
