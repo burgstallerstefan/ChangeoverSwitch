@@ -21,10 +21,9 @@ function logger(level, message) {
 }
 
 /*##################  MODEL  #########################*/
-// Initial state like alexa has turned it on
 let shelly = { 
   crossed: false,
-  load: true,
+  load: false,
   input: {
       "0": {
         state: false
@@ -35,13 +34,15 @@ let shelly = {
   },
   output: {
       "0": {
-        state: true,
+        state: false,
       },
       "1": {
-        state: true,
+        state: false,
       }
   }
 };
+
+let prevShelly = JSON.parse(JSON.stringify(shelly));
 
 let outputRPC = {
 call:[true, true],
@@ -98,8 +99,14 @@ Shelly.addEventHandler(function(event, _) {
 
 /*################## CHANGEOVER  #########################*/
 function changeover(){
+  function crosslogic(){
+    
+  }
   logger(WARNING, "     INPUT 0  :  "+shelly.input["1"].state + "     INPUT 1  :  "+shelly.input["0"].state);
   logger(WARNING, "     OUTPUT 0 :  "+shelly.output["1"].state + "     OUTPUT 1 :  "+shelly.output["0"].state);
+
+  crosslogic()
+
   if(! shelly.crossed){
     shelly.output["0"].state = shelly.input["0"].state;
     shelly.output["1"].state = shelly.input["1"].state;
@@ -107,6 +114,7 @@ function changeover(){
     shelly.output["0"].state = shelly.input["1"].state;
     shelly.output["1"].state = shelly.input["0"].state;
   }
+  prevShelly = JSON.parse(JSON.stringify(shelly));
   writeOutputs();
 }
 
