@@ -23,6 +23,7 @@ function logger(level, message) {
 /*##################  MODEL  #########################*/
 let shelly = { 
   crossed: false,
+  load: false,
   input: {
       "0": {
         state:   false
@@ -64,7 +65,7 @@ Shelly.addEventHandler(function(event, user_data) {
     else { shelly.output[id].state = state; }
   }
   function handlePowerUpdateEvent(id, apower) {
-    shelly.output[id].state = (apower > 0.0);
+    shelly.load = (apower > 0.0);
   }
   logger(VERBOSE, "Event: " + JSON.stringify(event));
   _id = event.component;
