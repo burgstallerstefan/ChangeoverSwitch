@@ -21,12 +21,13 @@ function logger(level, message) {
 }
 
 /*##################  MODEL  #########################*/
+// Initial state like alexa has turned it on
 let shelly = { 
   crossed: false,
-  load: false,
+  load: true,
   input: {
       "0": {
-        state:   false
+        state: false
       },
       "1": {
         state: false
@@ -34,10 +35,10 @@ let shelly = {
   },
   output: {
       "0": {
-        state: false,
+        state: true,
       },
       "1": {
-        state: false,
+        state: true,
       }
   }
 };
@@ -59,7 +60,8 @@ let _isInput = false;
 let _isSwitch = false;
 let _state;
 let _apower = 0.0;
-Shelly.addEventHandler(function(event, user_data) {
+
+Shelly.addEventHandler(function(event, _) {
   function handleToggleEvent(isInput, id, state) {
     if(isInput) { shelly.input[id].state = state; }
     else { shelly.output[id].state = state; }
@@ -94,15 +96,10 @@ Shelly.addEventHandler(function(event, user_data) {
   }
 }, null);
 
-/*##################  CHANGEOVER #########################*/
+/*################## CHANGEOVER  #########################*/
 function changeover(){
   logger(WARNING, "     INPUT 0  :  "+shelly.input["1"].state + "     INPUT 1  :  "+shelly.input["0"].state);
   logger(WARNING, "     OUTPUT 0 :  "+shelly.output["1"].state + "     OUTPUT 1 :  "+shelly.output["0"].state);
-  updateOutputs();
-}
-
-/*##################  UPDATE OUTPUTS  #########################*/
-function updateOutputs(){
   if(! shelly.crossed){
     shelly.output["0"].state = shelly.input["0"].state;
     shelly.output["1"].state = shelly.input["1"].state;
@@ -273,10 +270,7 @@ function initShelly() {
   },
   });   
 
-  // switch both outputs on
-  shelly.input["0"].state = true;
-  shelly.input["1"].state = true;
-  changeover
+  changeover();
 }
 /*##################  INIT SHELLY  #########################*/
 initShelly();
