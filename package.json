@@ -1,0 +1,13 @@
+{
+  "name": "changeoverswitch",
+  "version": "1.0.0",
+  "description": "This script enables **changeover switch** functionality for the **Shelly 2PM**, providing seamless integration between switches and smart home systems like Alexa.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node tests/testSetOutputs.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}
