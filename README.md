@@ -43,3 +43,15 @@ If the wiring is still freely selectable, you can wire the Shelly as follows and
 ---
 
 This script enhances the functionality of the Shelly 2PM, providing reliable changeover switching for manual and smart home setups.
+
+## Local Test Environment
+
+For development purposes a small mock environment is included. It allows running
+`Changeover.mjs` on Node.js without a physical Shelly device.
+
+```
+npm test
+```
+
+The `test.js` script uses `mock/shelly.js` to emulate the Shelly 2PM APIs and
+triggers a few example events.
